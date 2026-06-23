@@ -7,7 +7,6 @@ import 'package:rido_syria_app/core/network/remote/dio_helper.dart';
 import 'package:rido_syria_app/features/admin/cubit/states.dart';
 import 'package:rido_syria_app/features/admin/model/GetAdminOnlyModel.dart';
 import 'package:rido_syria_app/features/admin/model/GetDriverOnlyModel.dart';
-import 'package:rido_syria_app/features/admin/cubit/states.dart';
 
 import '../../../core/widgets/constant.dart';
 import '../../../core/widgets/show_toast.dart';
@@ -305,6 +304,10 @@ class AppCubitAdmin extends Cubit<AppStatesAdmin> {
     return adminPricingModel?.pricing?.minimumFare?.toString();
   }
 
+  String? get roundingToValue {
+    return adminPricingModel?.pricing?.roundingTo?.toString();
+  }
+
   bool get surgeEnabledValue {
     return adminPricingModel?.pricing?.surgeEnabled == true;
   }
@@ -324,6 +327,7 @@ class AppCubitAdmin extends Cubit<AppStatesAdmin> {
     required String pricePerKm,
     required String pricePerMinute,
     required String minimumFare,
+    required String roundingTo,
     required bool surgeEnabled,
     required String surgeMultiplier,
   }) async {
@@ -334,6 +338,7 @@ class AppCubitAdmin extends Cubit<AppStatesAdmin> {
       pricePerKm: pricePerKm,
       pricePerMinute: pricePerMinute,
       minimumFare: minimumFare,
+      roundingTo: roundingTo,
       surgeEnabled: surgeEnabled,
       surgeMultiplier: surgeMultiplier,
     );
@@ -353,6 +358,7 @@ class AppCubitAdmin extends Cubit<AppStatesAdmin> {
     required String pricePerKm,
     required String pricePerMinute,
     required String minimumFare,
+    required String roundingTo,
     required bool surgeEnabled,
     required String surgeMultiplier,
   }) async {
@@ -367,6 +373,7 @@ class AppCubitAdmin extends Cubit<AppStatesAdmin> {
           "pricePerKm": pricePerKm,
           "pricePerMinute": pricePerMinute,
           "minimumFare": minimumFare,
+          "roundingTo": roundingTo,
           "surgeEnabled": surgeEnabled,
           "surgeMultiplier": surgeMultiplier,
         },
@@ -493,6 +500,70 @@ class AppCubitAdmin extends Cubit<AppStatesAdmin> {
     );
     await Future.delayed(const Duration(milliseconds: 50));
     getAdminDebtSettings(context: context);
+  }
+
+  List<Map<String, dynamic>> rechargeCodes = [];
+
+  Future<void> getRechargeCodes({required BuildContext context}) async {
+    emit(AdminRechargeCodesLoadingState());
+    try {
+      final value = await DioHelper.getData(
+        url: '/admin/recharge-codes',
+        query: {'page': 1, 'limit': 50},
+        token: token,
+      );
+      final rows = value.data is Map<String, dynamic>
+          ? value.data['codes']
+          : null;
+      rechargeCodes = rows is List
+          ? rows
+              .whereType<Map>()
+              .map((e) => Map<String, dynamic>.from(e))
+              .toList()
+          : [];
+      emit(AdminRechargeCodesSuccessState());
+    } catch (error) {
+      final data = error is DioException ? error.response?.data : null;
+      final message = error is DioException
+          ? (data is Map ? data['error']?.toString() : null) ??
+              error.message ??
+              error.toString()
+          : error.toString();
+      showSnackBarError(text: message, context: context);
+      emit(AdminRechargeCodesErrorState(message));
+    }
+  }
+
+  Future<void> createRechargeCodes({
+    required BuildContext context,
+    required String amount,
+    required String count,
+    String? note,
+  }) async {
+    emit(AdminCreateRechargeCodesLoadingState());
+    try {
+      await DioHelper.postData(
+        url: '/admin/recharge-codes',
+        token: token,
+        data: {
+          'amount': amount,
+          'count': count,
+          'note': note ?? '',
+        },
+      );
+      showSnackBarSuccess(text: 'تم إنشاء أكواد الشحن', context: context);
+      emit(AdminCreateRechargeCodesSuccessState());
+      await getRechargeCodes(context: context);
+    } catch (error) {
+      final data = error is DioException ? error.response?.data : null;
+      final message = error is DioException
+          ? (data is Map ? data['error']?.toString() : null) ??
+              error.message ??
+              error.toString()
+          : error.toString();
+      showSnackBarError(text: message, context: context);
+      emit(AdminCreateRechargeCodesErrorState(message));
+    }
   }
 
   Future<void> payDriverDebt({

@@ -77,6 +77,24 @@ class UpdateAdminDebtSettingsSuccessState extends AppStatesAdmin {}
 
 class UpdateAdminDebtSettingsErrorState extends AppStatesAdmin {}
 
+class AdminRechargeCodesLoadingState extends AppStatesAdmin {}
+
+class AdminRechargeCodesSuccessState extends AppStatesAdmin {}
+
+class AdminRechargeCodesErrorState extends AppStatesAdmin {
+  final String message;
+  AdminRechargeCodesErrorState(this.message);
+}
+
+class AdminCreateRechargeCodesLoadingState extends AppStatesAdmin {}
+
+class AdminCreateRechargeCodesSuccessState extends AppStatesAdmin {}
+
+class AdminCreateRechargeCodesErrorState extends AppStatesAdmin {
+  final String message;
+  AdminCreateRechargeCodesErrorState(this.message);
+}
+
 class AdminPayDebtLoadingState extends AppStatesAdmin {}
 
 class AdminPayDebtSuccessState extends AppStatesAdmin {}

@@ -67,20 +67,25 @@ class DriverHome extends StatelessWidget {
 
               if (c.pendingRequests.isEmpty && c.activeRequestId == null) {
                 c.collapseSheet();
-              } else if (c.pendingRequests.isNotEmpty && c.tripStatus == "idle") {
+              } else if (c.pendingRequests.isNotEmpty &&
+                  c.tripStatus == "idle") {
                 c.openPendingSheet();
               }
             });
           }
 
           if (state is DriverTripStatusChangedState) {
-            if (state.status == "accepted" || state.status == "arrived" || state.status == "started") {
+            if (state.status == "accepted" ||
+                state.status == "arrived" ||
+                state.status == "started") {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 DriverCubit.get(context).lockActiveTripSheet();
               });
             }
 
-            if (state.status == "completed" || state.status == "cancelled" || state.status == "rejected") {
+            if (state.status == "completed" ||
+                state.status == "cancelled" ||
+                state.status == "rejected") {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 DriverCubit.get(context).collapseSheet();
               });
@@ -95,12 +100,17 @@ class DriverHome extends StatelessWidget {
             showSnackBarError(text: state.message, context: context);
           } else if (state is DriverNewRequestState) {
             showSnackBarSuccess(text: "وصل طلب جديد", context: context);
-          } else if (state is DriverTripStatusChangedState && state.status == "cancelled") {
+          } else if (state is DriverTripStatusChangedState &&
+              state.status == "cancelled") {
             showSnackBarInfo(text: "الزبون لغى الطلب", context: context);
-          } else if (state is DriverTripStatusChangedState && state.status == "rejected") {
+          } else if (state is DriverTripStatusChangedState &&
+              state.status == "rejected") {
             showSnackBarInfo(text: "تم رفض الطلب", context: context);
           } else if (state is DriverTripStatusChangedState) {
-            showSnackBarInfo(text: "الحالة: ${getStatusArabic(state.status)}", context: context);
+            showSnackBarInfo(
+              text: "الحالة: ${getStatusArabic(state.status)}",
+              context: context,
+            );
           } else if (state is DriverTripCompletedState) {
             _showTripSummaryDialog(context, state);
           } else if (state is DriverUserPaidOnlineState) {
@@ -172,7 +182,7 @@ class DriverHome extends StatelessWidget {
                       builder: (context, scrollController) {
                         return _bottomPanel(context, cubit, scrollController);
                       },
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -200,7 +210,11 @@ class DriverHome extends StatelessWidget {
     );
   }
 
-  Widget _bottomPanel(BuildContext context, DriverCubit cubit, ScrollController scrollController) {
+  Widget _bottomPanel(
+    BuildContext context,
+    DriverCubit cubit,
+    ScrollController scrollController,
+  ) {
     final activeReq = cubit.activeTripRequest;
     final pending = cubit.pendingRequests;
 
@@ -232,83 +246,97 @@ class DriverHome extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            cubit.riderModel != null ? Container() : Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            cubit.riderModel != null
+                ? Container()
+                : Column(
                   children: [
-                    // شارة رصيد المحفظة
-                    // cubit.isOnline ? Container(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    //   decoration: BoxDecoration(
-                    //     color: cubit.walletBalance > 0
-                    //         ? Colors.green.withOpacity(0.12)
-                    //         : Colors.red.withOpacity(0.12),
-                    //     borderRadius: BorderRadius.circular(20),
-                    //     border: Border.all(
-                    //       color: cubit.walletBalance > 0 ? Colors.green : Colors.redAccent,
-                    //       width: 0.8,
-                    //     ),
-                    //   ),
-                    //   child: Row(
-                    //     mainAxisSize: MainAxisSize.min,
-                    //     children: [
-                    //       Icon(
-                    //         Iconsax.wallet,
-                    //         size: 14,
-                    //         color: cubit.walletBalance > 0 ? Colors.green : Colors.redAccent,
-                    //       ),
-                    //       const SizedBox(width: 5),
-                    //       Text(
-                    //         '${cubit.walletBalance.toStringAsFixed(0)} IQD',
-                    //         style: TextStyle(
-                    //           fontWeight: FontWeight.bold,
-                    //           fontSize: 12,
-                    //           color: cubit.walletBalance > 0 ? Colors.green : Colors.redAccent,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ):Container(),
-                    Text(
-                      cubit.isOnline ? "قيد العمل" : 'في الاستراحة',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    SizedBox(
-                      width: 80,
-                      child: Text(
-                        cubit.isOnline ? "Online" : "Offline",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: cubit.isOnline ? Colors.green : Colors.redAccent,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // شارة رصيد المحفظة
+                        // cubit.isOnline ? Container(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        //   decoration: BoxDecoration(
+                        //     color: cubit.walletBalance > 0
+                        //         ? Colors.green.withOpacity(0.12)
+                        //         : Colors.red.withOpacity(0.12),
+                        //     borderRadius: BorderRadius.circular(20),
+                        //     border: Border.all(
+                        //       color: cubit.walletBalance > 0 ? Colors.green : Colors.redAccent,
+                        //       width: 0.8,
+                        //     ),
+                        //   ),
+                        //   child: Row(
+                        //     mainAxisSize: MainAxisSize.min,
+                        //     children: [
+                        //       Icon(
+                        //         Iconsax.wallet,
+                        //         size: 14,
+                        //         color: cubit.walletBalance > 0 ? Colors.green : Colors.redAccent,
+                        //       ),
+                        //       const SizedBox(width: 5),
+                        //       Text(
+                        //         '${cubit.walletBalance.toStringAsFixed(0)} SYP',
+                        //         style: TextStyle(
+                        //           fontWeight: FontWeight.bold,
+                        //           fontSize: 12,
+                        //           color: cubit.walletBalance > 0 ? Colors.green : Colors.redAccent,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ):Container(),
+                        Text(
+                          cubit.isOnline ? "قيد العمل" : 'في الاستراحة',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
                         ),
-                        textAlign: TextAlign.end,
-                      ),
+                        SizedBox(
+                          width: 80,
+                          child: Text(
+                            cubit.isOnline ? "Online" : "Offline",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  cubit.isOnline
+                                      ? Colors.green
+                                      : Colors.redAccent,
+                            ),
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      height: 2,
+                      color: borderColor,
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Container(width: double.infinity, height: 2, color: borderColor),
-              ],
-            ),
 
             const SizedBox(height: 10),
             if (activeReq == null && pending.isEmpty) ...[
               const SizedBox(height: 10),
               CustomButton(
-                title: cubit.isTogglingOnline
-                    ? "جاري التحديث..."
-                    : (cubit.isOnline ? "إيقاف استقبال الطلبات" : "تشغيل استقبال الطلبات"),
+                title:
+                    cubit.isTogglingOnline
+                        ? "جاري التحديث..."
+                        : (cubit.isOnline
+                            ? "إيقاف استقبال الطلبات"
+                            : "تشغيل استقبال الطلبات"),
                 onPressed: cubit.isTogglingOnline ? () {} : cubit.toggleOnline,
                 color: cubit.isOnline ? Colors.redAccent : primaryColor,
               ),
-            ]
-            else if (activeReq == null && pending.isNotEmpty) ...[
+            ] else if (activeReq == null && pending.isNotEmpty) ...[
               ...pending.map((req) {
                 final requestId = (req["requestId"] ?? "").toString();
                 return Column(
                   children: [
-                    _requestInfo(cubit, req,context),
+                    _requestInfo(cubit, req, context),
                     const SizedBox(height: 10),
                     Row(
                       children: [
@@ -332,20 +360,26 @@ class DriverHome extends StatelessWidget {
                   ],
                 );
               }).toList(),
-            ]else ...[
-              if ((cubit.tripStatus == "accepted" || cubit.tripStatus == "arrived" || cubit.tripStatus == "started") &&
+            ] else ...[
+              if ((cubit.tripStatus == "accepted" ||
+                      cubit.tripStatus == "arrived" ||
+                      cubit.tripStatus == "started") &&
                   cubit.riderModel != null) ...[
                 _riderInfoCard(cubit),
                 const SizedBox(height: 10),
-                Container(width: double.infinity, height: 2, color: borderColor),
+                Container(
+                  width: double.infinity,
+                  height: 2,
+                  color: borderColor,
+                ),
                 const SizedBox(height: 10),
               ],
-              _requestInfo(cubit, activeReq!,context),
+              _requestInfo(cubit, activeReq!, context),
               const SizedBox(height: 12),
-              _tripActions(cubit,context),
+              _tripActions(cubit, context),
               const SizedBox(height: 12),
               _buildNavigateButton(context, cubit, activeReq),
-            ]
+            ],
           ],
         ),
       ),
@@ -353,10 +387,10 @@ class DriverHome extends StatelessWidget {
   }
 
   Widget _buildNavigateButton(
-      BuildContext context,
-      DriverCubit cubit,
-      Map<String, dynamic> activeReq,
-      ) {
+    BuildContext context,
+    DriverCubit cubit,
+    Map<String, dynamic> activeReq,
+  ) {
     Map<String, dynamic>? target;
     String title = "الوجهة";
 
@@ -364,7 +398,6 @@ class DriverHome extends StatelessWidget {
       target = activeReq["pickup"] as Map<String, dynamic>?;
       title = "نقطة الانطلاق";
     }
-
 
     if (cubit.tripStatus == "arrived" || cubit.tripStatus == "started") {
       target = activeReq["dropoff"] as Map<String, dynamic>?;
@@ -386,7 +419,12 @@ class DriverHome extends StatelessWidget {
     );
   }
 
-  Future<void> openDirectionsChooser({required BuildContext context, required double lat, required double lng, String? title,}) async {
+  Future<void> openDirectionsChooser({
+    required BuildContext context,
+    required double lat,
+    required double lng,
+    String? title,
+  }) async {
     try {
       final maps = await MapLauncher.installedMaps;
 
@@ -438,7 +476,10 @@ class DriverHome extends StatelessWidget {
                           },
                           child: Container(
                             width: 110,
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 10,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(14),
@@ -460,7 +501,10 @@ class DriverHome extends StatelessWidget {
                                   m.mapName,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ],
                             ),
@@ -487,7 +531,6 @@ class DriverHome extends StatelessWidget {
       showSnackBarError(text: "صار خطأ بفتح الخرائط: $e", context: context);
     }
   }
-
 
   Widget _riderInfoCard(DriverCubit cubit) {
     final rider = cubit.riderModel;
@@ -533,7 +576,10 @@ class DriverHome extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(rider.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      rider.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     Text(rider.phone),
                   ],
                 ),
@@ -556,20 +602,29 @@ class DriverHome extends StatelessWidget {
     );
   }
 
-  Widget _requestInfo(DriverCubit cubit, Map<String, dynamic> req, BuildContext context) {
+  Widget _requestInfo(
+    DriverCubit cubit,
+    Map<String, dynamic> req,
+    BuildContext context,
+  ) {
     final p = (req["pickup"] is Map) ? req["pickup"] as Map : {};
     final d = (req["dropoff"] is Map) ? req["dropoff"] as Map : {};
     final fare = (req["estimatedFare"] ?? "").toString().trim();
     final serviceType = (req["serviceType"] ?? "normal").toString();
     final tripKm = (req["tripKm"] as num?)?.toDouble() ?? cubit.tripDistanceKm;
-    final toPickupKm = (req["toPickupKm"] as num?)?.toDouble() ?? cubit.driverToPickupKm;
+    final toPickupKm =
+        (req["toPickupKm"] as num?)?.toDouble() ?? cubit.driverToPickupKm;
 
-    final showToPickup = (cubit.tripStatus == "accepted" || cubit.tripStatus == "pending") && toPickupKm != null;
+    final showToPickup =
+        (cubit.tripStatus == "accepted" || cubit.tripStatus == "pending") &&
+        toPickupKm != null;
     final showTripKm = tripKm != null;
 
     final hasLeft = showToPickup || showTripKm;
     final hasFare = fare.isNotEmpty;
-    final isActiveTrip = cubit.activeRequestId == (req['requestId'] ?? '').toString() && cubit.activeRequestId != null;
+    final isActiveTrip =
+        cubit.activeRequestId == (req['requestId'] ?? '').toString() &&
+        cubit.activeRequestId != null;
 
     String pickupText = (p["address"] ?? "—").toString().trim();
     String dropoffText = (d["address"] ?? "—").toString().trim();
@@ -677,11 +732,15 @@ class DriverHome extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  color: serviceType == "vip"
-                      ? Colors.amber.withOpacity(0.15)
-                      : primaryColor.withOpacity(0.10),
+                  color:
+                      serviceType == "vip"
+                          ? Colors.amber.withOpacity(0.15)
+                          : primaryColor.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: serviceType == "vip" ? Colors.amber : primaryColor,
@@ -693,14 +752,20 @@ class DriverHome extends StatelessWidget {
                     Icon(
                       serviceType == "vip" ? Iconsax.crown : Iconsax.car,
                       size: 16,
-                      color: serviceType == "vip" ? Colors.amber[800] : primaryColor,
+                      color:
+                          serviceType == "vip"
+                              ? Colors.amber[800]
+                              : primaryColor,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       serviceType == "vip" ? "طلب VIP" : "طلب عادي",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: serviceType == "vip" ? Colors.amber[800] : primaryColor,
+                        color:
+                            serviceType == "vip"
+                                ? Colors.amber[800]
+                                : primaryColor,
                       ),
                     ),
                   ],
@@ -726,7 +791,10 @@ class DriverHome extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: primaryColor.withOpacity(0.06),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: primaryColor.withOpacity(0.15), width: 0.8),
+                        border: Border.all(
+                          color: primaryColor.withOpacity(0.15),
+                          width: 0.8,
+                        ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -745,9 +813,11 @@ class DriverHome extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(width: twoLines ? 4 : 6),
-                                Icon(Iconsax.routing,
-                                    size: twoLines ? 14 : 18,
-                                    color: primaryColor),
+                                Icon(
+                                  Iconsax.routing,
+                                  size: twoLines ? 14 : 18,
+                                  color: primaryColor,
+                                ),
                                 SizedBox(width: twoLines ? 4 : 6),
                                 Text(
                                   "إلى الزبون",
@@ -777,15 +847,15 @@ class DriverHome extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(width: 2),
-                                Icon(Iconsax.route_square,
-                                    size: twoLines ? 14 : 16,
-                                    color: primaryColor),
+                                Icon(
+                                  Iconsax.route_square,
+                                  size: twoLines ? 14 : 16,
+                                  color: primaryColor,
+                                ),
                                 SizedBox(width: 2),
                                 Text(
                                   "مسافة الرحلة",
-                                  style: TextStyle(
-                                    fontSize:  10,
-                                  ),
+                                  style: TextStyle(fontSize: 10),
                                 ),
                               ],
                             ),
@@ -793,7 +863,6 @@ class DriverHome extends StatelessWidget {
                       ),
                     ),
                   ),
-
 
                 if (hasLeft && hasFare) const SizedBox(width: 12),
 
@@ -806,11 +875,19 @@ class DriverHome extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text("IQD $fare",
-                                  maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.end),
+                              Text(
+                                "SYP $fare",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.end,
+                              ),
                               const Text(
                                 "التكلفة المتوقعة",
-                                style: TextStyle(fontWeight: FontWeight.bold, color: primaryColor,fontSize: 10),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryColor,
+                                  fontSize: 10,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.end,
@@ -821,7 +898,10 @@ class DriverHome extends StatelessWidget {
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: borderColor, shape: BoxShape.circle),
+                          decoration: BoxDecoration(
+                            color: borderColor,
+                            shape: BoxShape.circle,
+                          ),
                           child: const Icon(Iconsax.money, color: primaryColor),
                         ),
                       ],
@@ -835,7 +915,7 @@ class DriverHome extends StatelessWidget {
     );
   }
 
-  Widget _tripActions(DriverCubit cubit,BuildContext context) {
+  Widget _tripActions(DriverCubit cubit, BuildContext context) {
     if (cubit.tripStatus == "pending") {
       return Row(
         children: [
@@ -858,7 +938,10 @@ class DriverHome extends StatelessWidget {
     }
 
     if (cubit.tripStatus == "accepted") {
-      return CustomButton(title: "وصلت لمكان الزبون", onPressed: cubit.arrivedToPickup);
+      return CustomButton(
+        title: "وصلت لمكان الزبون",
+        onPressed: cubit.arrivedToPickup,
+      );
     }
     if (cubit.tripStatus == "arrived") {
       return CustomButton(title: "بدء الرحلة", onPressed: cubit.startTrip);
@@ -925,141 +1008,302 @@ class DriverHome extends StatelessWidget {
       text: cubit.activeTripRequest?['estimatedFare']?.toString() ?? '',
     );
     String selectedMethod = 'cash';
+    final showOnlinePayment = DateTime.now().millisecondsSinceEpoch < 0;
     showModalBottomSheet(
-      context: context, isScrollControlled: true,
+      context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => StatefulBuilder(
-        builder: (ctx, setS) => Padding(
-          padding: EdgeInsets.fromLTRB(20, 20, 20,
-              MediaQuery.of(ctx).viewInsets.bottom + 24),
-          child: Column(mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Center(child: Container(width: 46, height: 5,
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(color: Colors.black12,
-                    borderRadius: BorderRadius.circular(50)))),
-              const Text('طريقة الدفع والأجرة',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  textAlign: TextAlign.right),
-              const SizedBox(height: 16),
-              Row(children: [
-                _payMethodChip(label: 'نقود', icon: Iconsax.money,
-                    value: 'cash', selected: selectedMethod == 'cash',
-                    onTap: () => setS(() => selectedMethod = 'cash')),
-                const SizedBox(width: 10),
-                _payMethodChip(label: 'أونلاين', icon: Iconsax.card,
-                    value: 'online', selected: selectedMethod == 'online',
-                    onTap: () => setS(() => selectedMethod = 'online')),
-              ]),
-              const SizedBox(height: 16),
-              Directionality(textDirection: TextDirection.rtl,
-                child: TextFormField(controller: fareController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(labelText: 'الأجرة الفعلية (IQD)',
-                    hintText: 'مثال: 5000', suffixIcon: const Icon(Iconsax.money),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14))))),
-              const SizedBox(height: 14),
-              Container(padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: selectedMethod == 'cash'
-                      ? Colors.orange.withOpacity(0.08) : Colors.blue.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: selectedMethod == 'cash' ? Colors.orange : Colors.blue, width: 0.7)),
-                child: Text(
-                  selectedMethod == 'cash'
-                      ? 'الزبون دفع نقداً. سيُخصم نصيب الأدمن من محفظتك.'
-                      : 'الزبون دفع أونلاين. سيُضاف صافي أرباحك لمحفظتك.',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 12.5,
-                    color: selectedMethod == 'cash'
-                        ? Colors.orange.shade900 : Colors.blue.shade900))),
-              const SizedBox(height: 20),
-              SizedBox(width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                    padding: const EdgeInsets.symmetric(vertical: 14)),
-                  onPressed: () {
-                    Navigator.pop(ctx);
-                    cubit.endTrip();
-                  },
-                  child: const Text('تأكيد إنهاء الرحلة',
-                      style: TextStyle(color: Colors.white,
-                          fontWeight: FontWeight.bold, fontSize: 16)))),
-            ]),
-        )));
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder:
+          (_) => StatefulBuilder(
+            builder:
+                (ctx, setS) => Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    20,
+                    20,
+                    20,
+                    MediaQuery.of(ctx).viewInsets.bottom + 24,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 46,
+                          height: 5,
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                      ),
+                      const Text(
+                        'طريقة الدفع والأجرة',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          _payMethodChip(
+                            label: 'نقود',
+                            icon: Iconsax.money,
+                            value: 'cash',
+                            selected: selectedMethod == 'cash',
+                            onTap: () => setS(() => selectedMethod = 'cash'),
+                          ),
+                          if (showOnlinePayment) const SizedBox(width: 10),
+                          if (showOnlinePayment) _payMethodChip(
+                            label: 'أونلاين',
+                            icon: Iconsax.card,
+                            value: 'online',
+                            selected: selectedMethod == 'online',
+                            onTap: () => setS(() => selectedMethod = 'online'),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: TextFormField(
+                          controller: fareController,
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          decoration: InputDecoration(
+                            labelText: 'الأجرة الفعلية (SYP)',
+                            hintText: 'مثال: 5000',
+                            suffixIcon: const Icon(Iconsax.money),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color:
+                              selectedMethod == 'cash'
+                                  ? Colors.orange.withOpacity(0.08)
+                                  : Colors.blue.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color:
+                                selectedMethod == 'cash'
+                                    ? Colors.orange
+                                    : Colors.blue,
+                            width: 0.7,
+                          ),
+                        ),
+                        child: Text(
+                          selectedMethod == 'cash'
+                              ? 'الزبون دفع نقداً. سيُخصم نصيب الأدمن من محفظتك.'
+                              : 'الزبون دفع أونلاين. سيُضاف صافي أرباحك لمحفظتك.',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color:
+                                selectedMethod == 'cash'
+                                    ? Colors.orange.shade900
+                                    : Colors.blue.shade900,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(ctx);
+                            cubit.endTrip();
+                          },
+                          child: const Text(
+                            'تأكيد إنهاء الرحلة',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+          ),
+    );
   }
 
-  Widget _payMethodChip({required String label, required IconData icon,
-    required String value, required bool selected, required VoidCallback onTap}) {
-    return Expanded(child: GestureDetector(onTap: onTap,
-      child: AnimatedContainer(duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
+  Widget _payMethodChip({
+    required String label,
+    required IconData icon,
+    required String value,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
             color: selected ? primaryColor.withOpacity(0.1) : Colors.white,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-                color: selected ? primaryColor : Colors.black12,
-                width: selected ? 1.5 : 1)),
-        child: Column(children: [
-          Icon(icon, color: selected ? primaryColor : Colors.black45),
-          const SizedBox(height: 6),
-          Text(label, style: TextStyle(fontWeight: FontWeight.bold,
-              color: selected ? primaryColor : Colors.black54)),
-        ]))));
+              color: selected ? primaryColor : Colors.black12,
+              width: selected ? 1.5 : 1,
+            ),
+          ),
+          child: Column(
+            children: [
+              Icon(icon, color: selected ? primaryColor : Colors.black45),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: selected ? primaryColor : Colors.black54,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  void _showTripSummaryDialog(BuildContext context, DriverTripCompletedState s) {
-    showDialog(context: context, barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Text('ملخص الرحلة', style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(width: 8),
-          Icon(Iconsax.receipt, color: primaryColor),
-        ]),
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          _summaryRow(label: 'طريقة الدفع',
-              value: s.paymentMethod == 'cash' ? 'نقداً 💵' : 'أونلاين 💳'),
-          _summaryRow(label: 'الأجرة', value: '${s.finalFare.toStringAsFixed(0)} IQD'),
-          _summaryRow(label: 'عمولة الأدمن',
-              value: '${s.commission.toStringAsFixed(0)} IQD', valueColor: Colors.redAccent),
-          if (s.paymentMethod == 'online')
-            _summaryRow(label: 'صافي أرباحك',
-                value: '${s.driverEarnings.toStringAsFixed(0)} IQD', valueColor: Colors.green),
-          const Divider(height: 20),
-          _summaryRow(label: 'رصيد المحفظة',
-            value: s.newBalance != null ? '${s.newBalance!.toStringAsFixed(0)} IQD' : '---',
-            valueColor: (s.newBalance ?? 1) > 0 ? Colors.green : Colors.redAccent, bold: true),
-          if ((s.newBalance ?? 1) <= 0)
-            Container(margin: const EdgeInsets.only(top: 12),
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.red.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(12)),
-              child: const Text('رصيدك وصل لصفر!\nيجب شحن المحفظة لاستقبال رحلات.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.redAccent, fontSize: 13))),
-        ]),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [TextButton(onPressed: () => Navigator.pop(context),
-            child: const Text('حسناً',
-                style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold)))],
-      ));
+  void _showTripSummaryDialog(
+    BuildContext context,
+    DriverTripCompletedState s,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (_) => AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: const Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'ملخص الرحلة',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(width: 8),
+                Icon(Iconsax.receipt, color: primaryColor),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _summaryRow(
+                  label: 'طريقة الدفع',
+                  value: s.paymentMethod == 'cash' ? 'نقداً 💵' : 'أونلاين 💳',
+                ),
+                _summaryRow(
+                  label: 'الأجرة',
+                  value: '${s.finalFare.toStringAsFixed(0)} SYP',
+                ),
+                _summaryRow(
+                  label: 'عمولة الأدمن',
+                  value: '${s.commission.toStringAsFixed(0)} SYP',
+                  valueColor: Colors.redAccent,
+                ),
+                if (s.paymentMethod == 'online')
+                  _summaryRow(
+                    label: 'صافي أرباحك',
+                    value: '${s.driverEarnings.toStringAsFixed(0)} SYP',
+                    valueColor: Colors.green,
+                  ),
+                const Divider(height: 20),
+                _summaryRow(
+                  label: 'رصيد المحفظة',
+                  value:
+                      s.newBalance != null
+                          ? '${s.newBalance!.toStringAsFixed(0)} SYP'
+                          : '---',
+                  valueColor:
+                      (s.newBalance ?? 1) > 0 ? Colors.green : Colors.redAccent,
+                  bold: true,
+                ),
+                if ((s.newBalance ?? 1) <= 0)
+                  Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'رصيدك وصل لصفر!\nيجب شحن المحفظة لاستقبال رحلات.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.redAccent, fontSize: 13),
+                    ),
+                  ),
+              ],
+            ),
+            actionsAlignment: MainAxisAlignment.center,
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text(
+                  'حسناً',
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+    );
   }
 
-  Widget _summaryRow({required String label, required String value,
-    Color? valueColor, bool bold = false}) {
-    return Padding(padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(value, style: TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.w600,
-            color: valueColor ?? Colors.black87, fontSize: bold ? 15 : 14)),
-        Text(label, style: const TextStyle(color: Colors.black54, fontSize: 13)),
-      ]));
+  Widget _summaryRow({
+    required String label,
+    required String value,
+    Color? valueColor,
+    bool bold = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: bold ? FontWeight.bold : FontWeight.w600,
+              color: valueColor ?? Colors.black87,
+              fontSize: bold ? 15 : 14,
+            ),
+          ),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.black54, fontSize: 13),
+          ),
+        ],
+      ),
+    );
   }
-
 }

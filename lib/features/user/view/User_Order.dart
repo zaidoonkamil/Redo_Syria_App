@@ -10,7 +10,6 @@ import '../../../core/widgets/app_bar.dart';
 import '../cubit/cubit.dart';
 import '../cubit/states.dart';
 
-
 class UserOrder extends StatelessWidget {
   const UserOrder({super.key, required this.userId});
 
@@ -21,19 +20,22 @@ class UserOrder extends StatelessWidget {
   }
 
   Color _serviceColor(String serviceType) {
-    return serviceType.toLowerCase() == 'vip' ? Colors.amber : secondPrimaryColor;
+    return serviceType.toLowerCase() == 'vip'
+        ? Colors.amber
+        : secondPrimaryColor;
   }
 
   String _historyPriceText(Ride ride) {
     final serviceLabel = _serviceLabel(ride.serviceType);
-    return 'تم تسعير هذه الرحلة كخدمة $serviceLabel بمبلغ ${ride.estimatedFare} د.ع لمسافة ${ride.distanceKm} كم';
+    return 'تم تسعير هذه الرحلة كخدمة $serviceLabel بمبلغ ${ride.estimatedFare} ل.س لمسافة ${ride.distanceKm} كم';
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) =>
-      UserCubit()..getUserOrder(context: context, userId: userId),
+      create:
+          (BuildContext context) =>
+              UserCubit()..getUserOrder(context: context, userId: userId),
       child: BlocConsumer<UserCubit, UserStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -48,20 +50,29 @@ class UserOrder extends StatelessWidget {
                     CustomAppBarBack(),
                     Expanded(
                       child: ConditionalBuilder(
-                          condition: cubit.userOrderModel != null && cubit.userOrderModel!.rides.isNotEmpty,
-                          builder: (c){
-                            return ListView.builder(
-                              physics: AlwaysScrollableScrollPhysics(),
-                                itemCount: cubit.userOrderModel!.rides.length,
-                              itemBuilder: (context, index) {
-                                final ride = cubit.userOrderModel!.rides[index];
-                                return orderItem(context, ride);
-                              },
-                            );
-                          },
-                          fallback: (c)=>SizedBox(
+                        condition:
+                            cubit.userOrderModel != null &&
+                            cubit.userOrderModel!.rides.isNotEmpty,
+                        builder: (c) {
+                          return ListView.builder(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemCount: cubit.userOrderModel!.rides.length,
+                            itemBuilder: (context, index) {
+                              final ride = cubit.userOrderModel!.rides[index];
+                              return orderItem(context, ride);
+                            },
+                          );
+                        },
+                        fallback:
+                            (c) => SizedBox(
                               height: double.maxFinite,
-                              child: Center(child: CircularProgressIndicator(color: secondPrimaryColor,)))),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: secondPrimaryColor,
+                                ),
+                              ),
+                            ),
+                      ),
                     ),
                   ],
                 ),
@@ -93,7 +104,6 @@ class UserOrder extends StatelessWidget {
         statusText = "غير معروف";
     }
 
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
@@ -115,7 +125,10 @@ class UserOrder extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: statusColor.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(6),
@@ -131,7 +144,10 @@ class UserOrder extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: _serviceColor(ride.serviceType).withOpacity(0.12),
                   borderRadius: BorderRadius.circular(6),
@@ -168,7 +184,7 @@ class UserOrder extends StatelessWidget {
           ),
 
           const SizedBox(height: 10),
-          Container(width: double.maxFinite,height: 1,color: borderColor,),
+          Container(width: double.maxFinite, height: 1, color: borderColor),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -184,12 +200,17 @@ class UserOrder extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Container(
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: borderColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Iconsax.location5, color: secondPrimaryColor,size: 18,)),
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: borderColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Iconsax.location5,
+                  color: secondPrimaryColor,
+                  size: 18,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -207,24 +228,24 @@ class UserOrder extends StatelessWidget {
 
               const SizedBox(width: 6),
               Container(
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: borderColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Iconsax.flag, color: secondPrimaryColor,size: 18,)),
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: borderColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Iconsax.flag, color: secondPrimaryColor, size: 18),
+              ),
             ],
           ),
           const SizedBox(height: 10),
-          Container(width: double.maxFinite,height: 1,color: borderColor,),
+          Container(width: double.maxFinite, height: 1, color: borderColor),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _infoChip("دقيقة", ride.durationMin),
               _infoChip("كم", ride.distanceKm),
-              _infoChip("د.ع", ride.estimatedFare),
-
+              _infoChip("ل.س", ride.estimatedFare),
             ],
           ),
 
@@ -248,19 +269,21 @@ class UserOrder extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 4),
-                const Icon(Iconsax.info_circle, color: secondPrimaryColor, size: 18),
+                const Icon(
+                  Iconsax.info_circle,
+                  color: secondPrimaryColor,
+                  size: 18,
+                ),
               ],
             ),
           ),
 
           const SizedBox(height: 10),
-          Container(width: double.maxFinite,height: 1,color: borderColor,),
+          Container(width: double.maxFinite, height: 1, color: borderColor),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _infoTime(_formatDate(ride.createdAt), Iconsax.clock),
-            ],
+            children: [_infoTime(_formatDate(ride.createdAt), Iconsax.clock)],
           ),
         ],
       ),
@@ -282,23 +305,19 @@ class UserOrder extends StatelessWidget {
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: secondPrimaryColor
+              color: secondPrimaryColor,
             ),
           ),
           Text(
             " ${value ?? "--"}",
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
           ),
-
         ],
       ),
     );
   }
 
-  Widget _infoTime(String label,IconData icon) {
+  Widget _infoTime(String label, IconData icon) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -308,15 +327,11 @@ class UserOrder extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon,color: secondPrimaryColor,size: 18,),
+          Icon(icon, color: secondPrimaryColor, size: 18),
           Text(
             " $label",
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
           ),
-
         ],
       ),
     );
@@ -326,6 +341,4 @@ class UserOrder extends StatelessWidget {
     final d = date.toLocal();
     return "${d.year}/${d.month}/${d.day} - ${d.hour}:${d.minute.toString().padLeft(2, '0')}";
   }
-
-
 }

@@ -155,7 +155,7 @@ class CardOfOrder extends StatelessWidget {
               SizedBox(height: 12),
               Row(
                 children: [
-                  Text('د.ع '),
+                  Text('ل.س '),
                   Text(price),
                   Spacer(),
                   Text('سعر الطلب'),
@@ -165,7 +165,7 @@ class CardOfOrder extends StatelessWidget {
               SizedBox(height: 12),
               Row(
                 children: [
-                  Text('د.ع '),
+                  Text('ل.س '),
                   Text(deliveryPrice),
                   Spacer(),
                   Text('سعر التوصيل'),
@@ -179,7 +179,7 @@ class CardOfOrder extends StatelessWidget {
               SizedBox(height: 12),
               Row(
                 children: [
-                  Text('د.ع '),
+                  Text('ل.س '),
                   Text(totalPrice),
                   Spacer(),
                   Text('السعر الكلي'),

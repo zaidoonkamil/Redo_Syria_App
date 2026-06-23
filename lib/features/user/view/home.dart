@@ -18,7 +18,7 @@ import 'package:rido_syria_app/features/user/view/notifications.dart';
 import 'package:rido_syria_app/features/user/view/profile.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key, required this.cubit,});
+  const Home({super.key, required this.cubit});
 
   final UserCubit cubit;
 
@@ -81,8 +81,12 @@ class Home extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               final c = UserCubit.get(context);
               if (state.status == "pending") c.openPendingSheet();
-              if (state.status == "accepted" || state.status == "arrived" || state.status == "started") c.lockActiveTripSheet();
-              if (state.status == "completed" || state.status == "cancelled") c.collapseSheet();
+              if (state.status == "accepted" ||
+                  state.status == "arrived" ||
+                  state.status == "started")
+                c.lockActiveTripSheet();
+              if (state.status == "completed" || state.status == "cancelled")
+                c.collapseSheet();
             });
           }
 
@@ -91,16 +95,23 @@ class Home extends StatelessWidget {
           } else if (state is UserCreateRequestErrorState) {
             showSnackBarError(text: state.message, context: context);
           } else if (state is UserRequestCreatedState) {
-            showSnackBarSuccess(text: "تم إنشاء الطلب: ${state.requestId}", context: context);
+            showSnackBarSuccess(
+              text: "تم إنشاء الطلب: ${state.requestId}",
+              context: context,
+            );
           } else if (state is UserRideStatusChangedState) {
-            showSnackBarInfo(text: "حالة الرحلة: ${getStatusArabic(state.status)}", context: context);
+            showSnackBarInfo(
+              text: "حالة الرحلة: ${getStatusArabic(state.status)}",
+              context: context,
+            );
           } else if (state is UserCompleteRideSuccessState) {
             showSnackBarSuccess(text: "تم تأكيد الدفع بنجاح", context: context);
           } else if (state is UserCompleteRideErrorState) {
             showSnackBarError(text: "خطأ: ${state.message}", context: context);
           } else if (state is UserInsufficientBalanceState) {
             showSnackBarError(
-              text: "رصيد محفظتك غير كافي للدفع. الرجاء شحن المحفظة وإعادة المحاولة",
+              text:
+                  "رصيد محفظتك غير كافي للدفع. الرجاء شحن المحفظة وإعادة المحاولة",
               context: context,
             );
           } else if (state is UserPaymentPendingDriverState) {
@@ -112,7 +123,9 @@ class Home extends StatelessWidget {
         },
         builder: (context, state) {
           final cubit = UserCubit.get(context);
-          final hideCenterPin = cubit.activeRequestId != null || (cubit.pickupLatLng != null && cubit.dropoffLatLng != null);
+          final hideCenterPin =
+              cubit.activeRequestId != null ||
+              (cubit.pickupLatLng != null && cubit.dropoffLatLng != null);
 
           return Container(
             color: Colors.white,
@@ -120,9 +133,7 @@ class Home extends StatelessWidget {
               child: Scaffold(
                 body: Stack(
                   children: [
-                    Positioned.fill(
-                      child: _buildMap(context, cubit, state),
-                    ),
+                    Positioned.fill(child: _buildMap(context, cubit, state)),
 
                     Container(
                       width: double.infinity,
@@ -170,7 +181,10 @@ class Home extends StatelessWidget {
                           opacity: hideCenterPin ? 0.0 : 1.0,
                           child: AnimatedSlide(
                             duration: const Duration(milliseconds: 220),
-                            offset: hideCenterPin ? const Offset(0, -0.25) : Offset.zero,
+                            offset:
+                                hideCenterPin
+                                    ? const Offset(0, -0.25)
+                                    : Offset.zero,
                             child: FractionalTranslation(
                               translation: const Offset(0, -0.5),
                               child: Image.asset(
@@ -196,7 +210,6 @@ class Home extends StatelessWidget {
                         return _bottomPanel(context, cubit, scrollController);
                       },
                     ),
-
                   ],
                 ),
               ),
@@ -224,7 +237,6 @@ class Home extends StatelessWidget {
       onCameraMove: cubit.onCameraMove,
       onCameraIdle: cubit.onCameraIdle,
     );
-
   }
 
   Widget _circleIcon(IconData icon, VoidCallback onTap) {
@@ -256,7 +268,7 @@ class Home extends StatelessWidget {
     final name = driver.name;
     final phone = driver.phone;
     final image = driver.drivingLicenseBack.main;
-    final carType  = driver.vehicleType;
+    final carType = driver.vehicleType;
     final carColor = driver.vehicleColor;
     final carPlate = driver.vehicleNumber;
     final carImage = driver.carImages.main;
@@ -271,7 +283,7 @@ class Home extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: secondPrimaryColor.withOpacity(0.2),
@@ -279,17 +291,23 @@ class Home extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                cubit.rideStatus == "accepted" && cubit.driverModel != null?
-                Text('الكابتن في الطريق اليك',style: TextStyle(fontSize: 13),):
-                cubit.rideStatus == "arrived" && cubit.driverModel != null?
-                Text('الكابتن وصل الى موقعك',style: TextStyle(fontSize: 13),):
-                Text('الرحلة بدأت',style: TextStyle(fontSize: 13),),
-                SizedBox(width: 6,),
-                Icon(Iconsax.car, color: secondPrimaryColor,),
+                cubit.rideStatus == "accepted" && cubit.driverModel != null
+                    ? Text(
+                      'الكابتن في الطريق اليك',
+                      style: TextStyle(fontSize: 13),
+                    )
+                    : cubit.rideStatus == "arrived" && cubit.driverModel != null
+                    ? Text(
+                      'الكابتن وصل الى موقعك',
+                      style: TextStyle(fontSize: 13),
+                    )
+                    : Text('الرحلة بدأت', style: TextStyle(fontSize: 13)),
+                SizedBox(width: 6),
+                Icon(Iconsax.car, color: secondPrimaryColor),
               ],
             ),
           ),
-          SizedBox(height: 4,),
+          SizedBox(height: 4),
           Row(
             children: [
               GestureDetector(
@@ -307,11 +325,14 @@ class Home extends StatelessWidget {
                   children: [
                     Text(name),
                     Text(phone),
-                    Text('$carType - $carColor - $carPlate',style: TextStyle(color: secondPrimaryColor),),
+                    Text(
+                      '$carType - $carColor - $carPlate',
+                      style: TextStyle(color: secondPrimaryColor),
+                    ),
                   ],
                 ),
               ),
-              SizedBox(width: 6,),
+              SizedBox(width: 6),
               ClipRRect(
                 borderRadius: BorderRadius.circular(25),
                 child: Image.network(
@@ -328,7 +349,11 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _bottomPanel(BuildContext context, UserCubit cubit, ScrollController scrollController) {
+  Widget _bottomPanel(
+    BuildContext context,
+    UserCubit cubit,
+    ScrollController scrollController,
+  ) {
     final hasActive = cubit.activeRequestId != null;
     final status = cubit.rideStatus;
 
@@ -363,11 +388,17 @@ class Home extends StatelessWidget {
             if (hasActive && status == "pending") ...[
               const Text('جاري البحث عن سائق'),
               const SizedBox(height: 6),
-              const LinearProgressIndicator(minHeight: 4, color: secondPrimaryColor),
+              const LinearProgressIndicator(
+                minHeight: 4,
+                color: secondPrimaryColor,
+              ),
               const SizedBox(height: 12),
             ],
 
-            if ((status == "accepted" || status == "arrived" || status == "started") && cubit.driverModel != null) ...[
+            if ((status == "accepted" ||
+                    status == "arrived" ||
+                    status == "started") &&
+                cubit.driverModel != null) ...[
               _driverInfoCard(cubit),
               const SizedBox(height: 10),
               Container(width: double.infinity, height: 2, color: borderColor),
@@ -414,7 +445,7 @@ class Home extends StatelessWidget {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: secondPrimaryColor,
-                                fontSize: 7.5
+                                fontSize: 7.5,
                               ),
                             ),
                           ],
@@ -423,25 +454,30 @@ class Home extends StatelessWidget {
                         CircleAvatar(
                           radius: 18,
                           backgroundColor: secondPrimaryColor,
-                          child: Icon(Iconsax.headphone, color: Colors.white, size: 18),
+                          child: Icon(
+                            Iconsax.headphone,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
                       ],
                     ),
                   ),
+                ),
+              ] else
+                CustomButton(
+                  title: "إلغاء الرحلة",
+                  onPressed: cubit.cancelRideRequest,
+                  color: Colors.redAccent,
                 )
-              ]else
-              CustomButton(
-                title: "إلغاء الرحلة",
-                onPressed: cubit.cancelRideRequest,
-                color: Colors.redAccent,
-              )
             else
               CustomButton(
                 title: cubit.mainButtonText,
                 onPressed: cubit.onMainActionPressed,
               ),
           ],
-        )),
+        ),
+      ),
     );
   }
 
@@ -451,16 +487,19 @@ class Home extends StatelessWidget {
     final km = cubit.distanceKm;
     final hasKm = km != null;
     final hasFare = fare.isNotEmpty;
-    final pointsSelected = cubit.pickupLatLng != null && cubit.dropoffLatLng != null;
+    final pointsSelected =
+        cubit.pickupLatLng != null && cubit.dropoffLatLng != null;
     final hasActiveRequest = cubit.activeRequestId != null;
-    final effectiveServiceType = hasActiveRequest
-      ? cubit.currentRequestServiceType
-      : cubit.selectedServiceType?.value;
-    final serviceHint = effectiveServiceType == null
-      ? 'اختر نوع الرحلة أولاً'
-      : effectiveServiceType == 'vip'
-        ? 'سيتم احتساب السعر حسب تسعيرة VIP'
-        : 'سيتم احتساب السعر حسب التسعيرة العادية';
+    final effectiveServiceType =
+        hasActiveRequest
+            ? cubit.currentRequestServiceType
+            : cubit.selectedServiceType?.value;
+    final serviceHint =
+        effectiveServiceType == null
+            ? 'اختر نوع الرحلة أولاً'
+            : effectiveServiceType == 'vip'
+            ? 'سيتم احتساب السعر حسب تسعيرة VIP'
+            : 'سيتم احتساب السعر حسب التسعيرة العادية';
     final hasServiceType = effectiveServiceType != null;
 
     if (cubit.isSearching) {
@@ -477,14 +516,18 @@ class Home extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: cubit.stopSearch,
-                  icon: const Icon(Iconsax.arrow_right_3, color: secondPrimaryColor),
+                  icon: const Icon(
+                    Iconsax.arrow_right_3,
+                    color: secondPrimaryColor,
+                  ),
                 ),
                 Expanded(
                   child: SearchTextField(
                     controller: cubit.searchController,
-                    hintText: cubit.searchingFor == SelectingPoint.pickup
-                        ? "ابحث عن نقطة الانطلاق..."
-                        : "ابحث عن نقطة الوصول...",
+                    hintText:
+                        cubit.searchingFor == SelectingPoint.pickup
+                            ? "ابحث عن نقطة الانطلاق..."
+                            : "ابحث عن نقطة الوصول...",
                     onChanged: cubit.searchPlaces,
                   ),
                 ),
@@ -495,7 +538,10 @@ class Home extends StatelessWidget {
             if (cubit.placeSuggestions.isEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text("اكتب اسم المكان حتى تظهر الاقتراحات", style: TextStyle(fontSize: 12)),
+                child: Text(
+                  "اكتب اسم المكان حتى تظهر الاقتراحات",
+                  style: TextStyle(fontSize: 12),
+                ),
               )
             else
               ListView.separated(
@@ -512,9 +558,14 @@ class Home extends StatelessWidget {
                       textAlign: TextAlign.right,
                       style: const TextStyle(fontSize: 12),
                     ),
-                    subtitle: s.secondaryText.isNotEmpty
-                        ? Text(s.secondaryText, textAlign: TextAlign.right, style: const TextStyle(fontSize: 11))
-                        : null,
+                    subtitle:
+                        s.secondaryText.isNotEmpty
+                            ? Text(
+                              s.secondaryText,
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(fontSize: 11),
+                            )
+                            : null,
                     onTap: () => cubit.selectPlaceSuggestion(s),
                   );
                 },
@@ -550,14 +601,25 @@ class Home extends StatelessWidget {
                       child: SearchTextField(
                         hintText: pickupText(cubit),
                         readOnly: true,
-                        onTap: hasActiveRequest ? null : () => cubit.startSearch(SelectingPoint.pickup),
+                        onTap:
+                            hasActiveRequest
+                                ? null
+                                : () =>
+                                    cubit.startSearch(SelectingPoint.pickup),
                       ),
                     ),
                     const SizedBox(width: 6),
                     Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(color: borderColor, shape: BoxShape.circle),
-                      child: const Icon(Iconsax.location5, color: Colors.green, size: 20),
+                      decoration: BoxDecoration(
+                        color: borderColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Iconsax.location5,
+                        color: Colors.green,
+                        size: 20,
+                      ),
                     ),
                   ],
                 ),
@@ -591,14 +653,25 @@ class Home extends StatelessWidget {
                       child: SearchTextField(
                         hintText: dropoff,
                         readOnly: true,
-                        onTap: hasActiveRequest ? null : () => cubit.startSearch(SelectingPoint.dropoff),
+                        onTap:
+                            hasActiveRequest
+                                ? null
+                                : () =>
+                                    cubit.startSearch(SelectingPoint.dropoff),
                       ),
                     ),
                     const SizedBox(width: 6),
                     Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(color: borderColor, shape: BoxShape.circle),
-                      child: const Icon(Iconsax.location5, color: Colors.redAccent, size: 20),
+                      decoration: BoxDecoration(
+                        color: borderColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Iconsax.location5,
+                        color: Colors.redAccent,
+                        size: 20,
+                      ),
                     ),
                   ],
                 ),
@@ -630,18 +703,25 @@ class Home extends StatelessWidget {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => cubit.changeServiceType(RideServiceType.normal),
+                    onTap:
+                        () => cubit.changeServiceType(RideServiceType.normal),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 10,
+                      ),
                       decoration: BoxDecoration(
-                        color: cubit.selectedServiceType == RideServiceType.normal
-                            ? secondPrimaryColor.withOpacity(0.12)
-                            : Colors.white,
+                        color:
+                            cubit.selectedServiceType == RideServiceType.normal
+                                ? secondPrimaryColor.withOpacity(0.12)
+                                : Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: cubit.selectedServiceType == RideServiceType.normal
-                              ? secondPrimaryColor
-                              : borderColor,
+                          color:
+                              cubit.selectedServiceType ==
+                                      RideServiceType.normal
+                                  ? secondPrimaryColor
+                                  : borderColor,
                         ),
                       ),
                       child: Column(
@@ -662,16 +742,21 @@ class Home extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () => cubit.changeServiceType(RideServiceType.vip),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 10,
+                      ),
                       decoration: BoxDecoration(
-                        color: cubit.selectedServiceType == RideServiceType.vip
-                            ? secondPrimaryColor.withOpacity(0.12)
-                            : Colors.white,
+                        color:
+                            cubit.selectedServiceType == RideServiceType.vip
+                                ? secondPrimaryColor.withOpacity(0.12)
+                                : Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: cubit.selectedServiceType == RideServiceType.vip
-                              ? secondPrimaryColor
-                              : borderColor,
+                          color:
+                              cubit.selectedServiceType == RideServiceType.vip
+                                  ? secondPrimaryColor
+                                  : borderColor,
                         ),
                       ),
                       child: Column(
@@ -698,19 +783,28 @@ class Home extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: _serviceColor(effectiveServiceType).withOpacity(0.10),
+                    color: _serviceColor(
+                      effectiveServiceType,
+                    ).withOpacity(0.10),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: _serviceColor(effectiveServiceType).withOpacity(0.35),
+                      color: _serviceColor(
+                        effectiveServiceType,
+                      ).withOpacity(0.35),
                     ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        effectiveServiceType == 'vip' ? Iconsax.crown : Iconsax.car,
+                        effectiveServiceType == 'vip'
+                            ? Iconsax.crown
+                            : Iconsax.car,
                         size: 16,
                         color: _serviceColor(effectiveServiceType),
                       ),
@@ -763,8 +857,14 @@ class Home extends StatelessWidget {
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: borderColor, shape: BoxShape.circle),
-                          child: const Icon(Iconsax.route_square, color: secondPrimaryColor),
+                          decoration: BoxDecoration(
+                            color: borderColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Iconsax.route_square,
+                            color: secondPrimaryColor,
+                          ),
                         ),
                       ],
                     ),
@@ -779,7 +879,7 @@ class Home extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                "IQD $fare",
+                                "SYP $fare",
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.end,
@@ -802,8 +902,14 @@ class Home extends StatelessWidget {
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: borderColor, shape: BoxShape.circle),
-                          child: const Icon(Iconsax.money, color: secondPrimaryColor),
+                          decoration: BoxDecoration(
+                            color: borderColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Iconsax.money,
+                            color: secondPrimaryColor,
+                          ),
                         ),
                       ],
                     ),
@@ -821,8 +927,10 @@ class Home extends StatelessWidget {
     return StatefulBuilder(
       builder: (ctx, setS) {
         final method = cubit.selectedPaymentMethod;
-        final paid   = cubit.paymentDoneOnline;
-        final loading = context.read<UserCubit>().state is UserCompleteRideLoadingState;
+        final paid = cubit.paymentDoneOnline;
+        final showOnlinePayment = DateTime.now().millisecondsSinceEpoch < 0;
+        final loading =
+            context.read<UserCubit>().state is UserCompleteRideLoadingState;
 
         // إذا دفع أونلاين بنجاح → بطاقة انتظار
         if (paid) return _pendingDriverCard();
@@ -833,29 +941,55 @@ class Home extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: secondPrimaryColor.withOpacity(0.3)),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06),
-                blurRadius: 10, offset: const Offset(0, 4))],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               // ─ عنوان
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
-                Text('اختر طريقة الدفع',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                SizedBox(width: 6),
-                Icon(Iconsax.wallet, color: secondPrimaryColor, size: 18),
-              ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: const [
+                  Text(
+                    'اختر طريقة الدفع',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                  SizedBox(width: 6),
+                  Icon(Iconsax.wallet, color: secondPrimaryColor, size: 18),
+                ],
+              ),
               const SizedBox(height: 12),
 
               // ─ أزرار كاش / أونلاين
-              Row(children: [
-                _riderPayChip(ctx, cubit, label: 'نقداً', icon: Iconsax.money,
-                    value: 'cash', selected: method == 'cash', setS: setS),
-                const SizedBox(width: 10),
-                _riderPayChip(ctx, cubit, label: 'أونلاين', icon: Iconsax.card,
-                    value: 'online', selected: method == 'online', setS: setS),
-              ]),
+              Row(
+                children: [
+                  _riderPayChip(
+                    ctx,
+                    cubit,
+                    label: 'نقداً',
+                    icon: Iconsax.money,
+                    value: 'cash',
+                    selected: method == 'cash',
+                    setS: setS,
+                  ),
+                  if (showOnlinePayment) const SizedBox(width: 10),
+                  if (showOnlinePayment) _riderPayChip(
+                    ctx,
+                    cubit,
+                    label: 'أونلاين',
+                    icon: Iconsax.card,
+                    value: 'online',
+                    selected: method == 'online',
+                    setS: setS,
+                  ),
+                ],
+              ),
               const SizedBox(height: 12),
 
               // ─ محتوى حسب الطريقة
@@ -869,17 +1003,24 @@ class Home extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.orange.withOpacity(0.3)),
                   ),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
-                    Expanded(
-                      child: Text(
-                        'ستدفع نقداً للسائق مباشرة\nسينتهي السائق الرحلة بعد استلام المبلغ',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 12.5, height: 1.5, color: Colors.orange),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: const [
+                      Expanded(
+                        child: Text(
+                          'ستدفع نقداً للسائق مباشرة\nسينتهي السائق الرحلة بعد استلام المبلغ',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            height: 1.5,
+                            color: Colors.orange,
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8),
-                    Icon(Iconsax.money, color: Colors.orange, size: 20),
-                  ]),
+                      SizedBox(width: 8),
+                      Icon(Iconsax.money, color: Colors.orange, size: 20),
+                    ],
+                  ),
                 ),
               ] else ...[
                 // أونلاين: زر ادفع الآن
@@ -889,18 +1030,31 @@ class Home extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondPrimaryColor,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 13),
                     ),
-                    icon: loading
-                        ? const SizedBox(width: 18, height: 18,
-                            child: CircularProgressIndicator(
-                                color: Colors.white, strokeWidth: 2))
-                        : const Icon(Iconsax.card, color: Colors.white, size: 18),
+                    icon:
+                        loading
+                            ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                            : const Icon(
+                              Iconsax.card,
+                              color: Colors.white,
+                              size: 18,
+                            ),
                     label: Text(
                       loading ? 'جاري الدفع...' : 'ادفع أونلاين الآن',
                       style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     onPressed: loading ? null : cubit.payOnlineRide,
                   ),
@@ -923,36 +1077,48 @@ class Home extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.green.withOpacity(0.4)),
       ),
-      child: Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text('تم الدفع بنجاح ✔',
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: const [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'تم الدفع بنجاح ✔',
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                      fontSize: 15)),
-              SizedBox(height: 4),
-              Text('انتظر الكابتن لينهي الرحلة',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                    fontSize: 15,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'انتظر الكابتن لينهي الرحلة',
                   style: TextStyle(fontSize: 12.5, color: Colors.green),
-                  textAlign: TextAlign.right),
-            ],
+                  textAlign: TextAlign.right,
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(width: 12),
-        CircleAvatar(
-          radius: 22,
-          backgroundColor: Colors.green,
-          child: Icon(Iconsax.tick_circle, color: Colors.white, size: 22),
-        ),
-      ]),
+          SizedBox(width: 12),
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: Colors.green,
+            child: Icon(Iconsax.tick_circle, color: Colors.white, size: 22),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _riderPayChip(BuildContext ctx, UserCubit cubit, {
-    required String label, required IconData icon,
-    required String value, required bool selected,
+  Widget _riderPayChip(
+    BuildContext ctx,
+    UserCubit cubit, {
+    required String label,
+    required IconData icon,
+    required String value,
+    required bool selected,
     required StateSetter setS,
   }) {
     return Expanded(
@@ -965,21 +1131,29 @@ class Home extends StatelessWidget {
           duration: const Duration(milliseconds: 160),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: selected ? secondPrimaryColor.withOpacity(0.10) : Colors.white,
+            color:
+                selected ? secondPrimaryColor.withOpacity(0.10) : Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-                color: selected ? secondPrimaryColor : Colors.black12,
-                width: selected ? 1.5 : 1),
+              color: selected ? secondPrimaryColor : Colors.black12,
+              width: selected ? 1.5 : 1,
+            ),
           ),
-          child: Column(children: [
-            Icon(icon, color: selected ? secondPrimaryColor : Colors.black45),
-            const SizedBox(height: 5),
-            Text(label, style: TextStyle(fontWeight: FontWeight.bold,
-                color: selected ? secondPrimaryColor : Colors.black54)),
-          ]),
+          child: Column(
+            children: [
+              Icon(icon, color: selected ? secondPrimaryColor : Colors.black45),
+              const SizedBox(height: 5),
+              Text(
+                label,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: selected ? secondPrimaryColor : Colors.black54,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-
 }

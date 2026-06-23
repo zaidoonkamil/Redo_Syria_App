@@ -296,6 +296,56 @@ class UserCubit extends Cubit<UserStates> {
     });
   }
 
+  Future<void> redeemRechargeCode({
+    required BuildContext context,
+    required String code,
+  }) async {
+    final normalizedCode = code.trim();
+    if (normalizedCode.isEmpty) {
+      showSnackBarError(text: 'يرجى إدخال كود الشحن', context: context);
+      return;
+    }
+
+    emit(RedeemRechargeCodeLoadingState());
+    try {
+      final value = await DioHelper.postData(
+        url: '/wallet/redeem-code',
+        token: token,
+        data: {'code': normalizedCode},
+      );
+
+      final wallet = value.data is Map<String, dynamic>
+          ? (value.data['wallet'] as Map<String, dynamic>?)
+          : null;
+      final balance = wallet?['balance'];
+      walletBalance = (balance is num)
+          ? balance.toDouble()
+          : double.tryParse(balance?.toString() ?? '0') ?? walletBalance;
+
+      showSnackBarSuccess(text: 'تم شحن المحفظة بنجاح', context: context);
+      emit(RedeemRechargeCodeSuccessState());
+      getWallet(context: context);
+      getWalletTransactions(context: context);
+    } on DioError catch (error) {
+      final serverError = error.response?.data is Map<String, dynamic>
+          ? error.response?.data['error']?.toString()
+          : null;
+      final message = switch (serverError) {
+        'invalid_recharge_code' => 'كود الشحن غير صحيح',
+        'recharge_code_already_used' => 'هذا الكود مستخدم مسبقاً',
+        'recharge_code_cancelled' => 'هذا الكود ملغي',
+        'driver_wallet_only' => 'الشحن بالكود متاح للسائق فقط',
+        _ => 'تعذر شحن المحفظة',
+      };
+      showSnackBarError(text: message, context: context);
+      emit(RedeemRechargeCodeErrorState(message));
+    } catch (error) {
+      final message = error.toString();
+      showSnackBarError(text: message, context: context);
+      emit(RedeemRechargeCodeErrorState(message));
+    }
+  }
+
   final DraggableScrollableController sheetController = DraggableScrollableController();
 
   void _animateSheet(double size) {

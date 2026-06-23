@@ -4,27 +4,26 @@
 
 import 'dart:convert';
 
-AdminPricingModel adminPricingModelFromJson(String str) => AdminPricingModel.fromJson(json.decode(str));
+AdminPricingModel adminPricingModelFromJson(String str) =>
+    AdminPricingModel.fromJson(json.decode(str));
 
-String adminPricingModelToJson(AdminPricingModel data) => json.encode(data.toJson());
+String adminPricingModelToJson(AdminPricingModel data) =>
+    json.encode(data.toJson());
 
 class AdminPricingModel {
   Pricing? pricing;
 
-  AdminPricingModel({
-    this.pricing,
-  });
+  AdminPricingModel({this.pricing});
 
   factory AdminPricingModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) return AdminPricingModel();
     return AdminPricingModel(
-      pricing: json["pricing"] != null ? Pricing.fromJson(json["pricing"]) : null,
+      pricing:
+          json["pricing"] != null ? Pricing.fromJson(json["pricing"]) : null,
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    "pricing": pricing?.toJson(),
-  };
+  Map<String, dynamic> toJson() => {"pricing": pricing?.toJson()};
 }
 
 class Pricing {
@@ -34,6 +33,7 @@ class Pricing {
   String? pricePerKm;
   dynamic pricePerMinute;
   dynamic minimumFare;
+  dynamic roundingTo;
   bool? surgeEnabled;
   String? surgeMultiplier;
   int? updatedByAdminId;
@@ -47,6 +47,7 @@ class Pricing {
     this.pricePerKm,
     this.pricePerMinute,
     this.minimumFare,
+    this.roundingTo,
     this.surgeEnabled,
     this.surgeMultiplier,
     this.updatedByAdminId,
@@ -63,11 +64,22 @@ class Pricing {
       pricePerKm: json["pricePerKm"]?.toString(),
       pricePerMinute: json["pricePerMinute"],
       minimumFare: json["minimumFare"],
-      surgeEnabled: json["surgeEnabled"] == true || json["surgeEnabled"] == 'true',
+      roundingTo: json["roundingTo"],
+      surgeEnabled:
+          json["surgeEnabled"] == true || json["surgeEnabled"] == 'true',
       surgeMultiplier: json["surgeMultiplier"]?.toString(),
-      updatedByAdminId: json["updatedByAdminId"] != null ? int.tryParse(json["updatedByAdminId"].toString()) : null,
-      createdAt: json["createdAt"] != null ? DateTime.tryParse(json["createdAt"].toString()) : null,
-      updatedAt: json["updatedAt"] != null ? DateTime.tryParse(json["updatedAt"].toString()) : null,
+      updatedByAdminId:
+          json["updatedByAdminId"] != null
+              ? int.tryParse(json["updatedByAdminId"].toString())
+              : null,
+      createdAt:
+          json["createdAt"] != null
+              ? DateTime.tryParse(json["createdAt"].toString())
+              : null,
+      updatedAt:
+          json["updatedAt"] != null
+              ? DateTime.tryParse(json["updatedAt"].toString())
+              : null,
     );
   }
 
@@ -78,6 +90,7 @@ class Pricing {
     "pricePerKm": pricePerKm,
     "pricePerMinute": pricePerMinute,
     "minimumFare": minimumFare,
+    "roundingTo": roundingTo,
     "surgeEnabled": surgeEnabled,
     "surgeMultiplier": surgeMultiplier,
     "updatedByAdminId": updatedByAdminId,

@@ -30,6 +30,13 @@ class GetWalletTransactionsLoadingState extends UserStates {}
 class GetWalletTransactionsSuccessState extends UserStates {}
 class GetWalletTransactionsErrorState extends UserStates {}
 
+class RedeemRechargeCodeLoadingState extends UserStates {}
+class RedeemRechargeCodeSuccessState extends UserStates {}
+class RedeemRechargeCodeErrorState extends UserStates {
+  final String message;
+  RedeemRechargeCodeErrorState(this.message);
+}
+
 
 class UserLoadingLocationState extends UserStates {}
 class UserLocationReadyState extends UserStates {}

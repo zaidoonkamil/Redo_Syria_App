@@ -216,25 +216,25 @@ class Login extends StatelessWidget {
                                 fallback: (c)=> CircularProgressIndicator(color: primaryColor,),
                               ),
                               const SizedBox(height: 21),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   children: [
-                              //     GestureDetector(
-                              //       onTap: () {
-                              //         navigateTo(context, Register());
-                              //       },
-                              //       child: const Text(
-                              //         'انشاء حساب ',
-                              //         style: TextStyle(
-                              //           color: primaryColor,
-                              //
-                              //           fontWeight: FontWeight.bold,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     const Text("لا تمتلك حساب ؟ ",style: TextStyle(color: secondPrimaryTextColor, fontSize: 12,),),
-                              //   ],
-                              // ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      navigateTo(context, Register());
+                                    },
+                                    child: const Text(
+                                      'انشاء حساب ',
+                                      style: TextStyle(
+                                        color: primaryColor,
+
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const Text("لا تمتلك حساب ؟ ",style: TextStyle(color: secondPrimaryTextColor, fontSize: 12,),),
+                                ],
+                              ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

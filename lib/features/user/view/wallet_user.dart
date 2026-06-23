@@ -7,21 +7,38 @@ import 'package:rido_syria_app/core/widgets/app_bar.dart';
 import 'package:rido_syria_app/features/user/cubit/cubit.dart';
 import 'package:rido_syria_app/features/user/cubit/states.dart';
 
-class WalletUserView extends StatelessWidget {
+class WalletUserView extends StatefulWidget {
   const WalletUserView({super.key});
+
+  @override
+  State<WalletUserView> createState() => _WalletUserViewState();
+}
+
+class _WalletUserViewState extends State<WalletUserView> {
+  final TextEditingController _codeController = TextEditingController();
+
+  @override
+  void dispose() {
+    _codeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => UserCubit()
-        ..getWallet(context: context)
-        ..getWalletTransactions(context: context),
+      create:
+          (_) =>
+              UserCubit()
+                ..getWallet(context: context)
+                ..getWalletTransactions(context: context),
       child: BlocConsumer<UserCubit, UserStates>(
         listener: (context, state) {},
         builder: (context, state) {
           final cubit = UserCubit.get(context);
           final isLoadingWallet = state is GetWalletLoadingState;
-          final isLoadingTransactions = state is GetWalletTransactionsLoadingState;
+          final isLoadingTransactions =
+              state is GetWalletTransactionsLoadingState;
+          final isRedeeming = state is RedeemRechargeCodeLoadingState;
 
           return Container(
             color: Colors.white,
@@ -48,6 +65,21 @@ class WalletUserView extends StatelessWidget {
                                 loading: isLoadingWallet,
                               ),
                               const SizedBox(height: 14),
+                              _RechargeCodeCard(
+                                controller: _codeController,
+                                loading: isRedeeming,
+                                onSubmit: () async {
+                                  await cubit.redeemRechargeCode(
+                                    context: context,
+                                    code: _codeController.text,
+                                  );
+                                  if (mounted &&
+                                      cubit.state is RedeemRechargeCodeSuccessState) {
+                                    _codeController.clear();
+                                  }
+                                },
+                              ),
+                              const SizedBox(height: 14),
                               const Text(
                                 'حركات المحفظة',
                                 style: TextStyle(
@@ -64,12 +96,16 @@ class WalletUserView extends StatelessWidget {
                                     return _EmptyTransactions();
                                   }
                                   return Column(
-                                    children: cubit.walletTransactions
-                                        .map((tx) => _TransactionTile(tx: tx))
-                                        .toList(),
+                                    children:
+                                        cubit.walletTransactions
+                                            .map(
+                                              (tx) => _TransactionTile(tx: tx),
+                                            )
+                                            .toList(),
                                   );
                                 },
-                                fallback: (context) => const _TransactionsLoading(),
+                                fallback:
+                                    (context) => const _TransactionsLoading(),
                               ),
                             ],
                           ),
@@ -82,6 +118,90 @@ class WalletUserView extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _RechargeCodeCard extends StatelessWidget {
+  const _RechargeCodeCard({
+    required this.controller,
+    required this.loading,
+    required this.onSubmit,
+  });
+
+  final TextEditingController controller;
+  final bool loading;
+  final VoidCallback onSubmit;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          const Text(
+            'شحن المحفظة بالكود',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
+              color: primaryTextColor,
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: controller,
+            textAlign: TextAlign.left,
+            textCapitalization: TextCapitalization.characters,
+            decoration: InputDecoration(
+              hintText: 'RXXXXXXXXXXXX',
+              prefixIcon: const Icon(Iconsax.ticket, color: secondPrimaryColor),
+              filled: true,
+              fillColor: containerColor,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 12,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            height: 46,
+            child: ElevatedButton.icon(
+              onPressed: loading ? null : onSubmit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: secondPrimaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              icon: loading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Iconsax.wallet_add, size: 20),
+              label: Text(loading ? 'جاري الشحن...' : 'شحن'),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -119,7 +239,11 @@ class _BalanceCard extends StatelessWidget {
               color: secondPrimaryColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Icon(Iconsax.wallet_2, color: secondPrimaryColor, size: 24),
+            child: const Icon(
+              Iconsax.wallet_2,
+              color: secondPrimaryColor,
+              size: 24,
+            ),
           ),
           const Spacer(),
           Column(
@@ -145,7 +269,7 @@ class _BalanceCard extends StatelessWidget {
                 )
               else
                 Text(
-                  '${amount.toStringAsFixed(0)} IQD ',
+                  '${amount.toStringAsFixed(0)} SYP ',
                   style: const TextStyle(
                     fontSize: 20,
                     color: primaryTextColor,
@@ -210,7 +334,7 @@ class _TransactionTile extends StatelessWidget {
               ),
               const SizedBox(height: 3),
               Text(
-                '$amount د.ع',
+                '$amount ل.س',
                 style: TextStyle(
                   fontSize: 12,
                   color: isCredit ? Colors.green : Colors.red,

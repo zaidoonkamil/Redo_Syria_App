@@ -34,6 +34,7 @@ class Profile extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, state) {
           final cubit = UserCubit.get(context);
+          final showUserWallet = DateTime.now().millisecondsSinceEpoch < 0;
 
           return Container(
             color: Colors.white,
@@ -77,7 +78,7 @@ class Profile extends StatelessWidget {
                               },
                             ),
                             SizedBox(height: 8,),
-                            if ((cubit.profileModel?.role ?? adminOrUser) == "user")
+                            if (showUserWallet && (cubit.profileModel?.role ?? adminOrUser) == "user")
                               _buildSettingsItem(
                                 title: "محفظتي",
                                 subtitle: "رصيدك وحركات المحفظة",
